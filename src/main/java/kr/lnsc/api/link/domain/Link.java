@@ -1,4 +1,4 @@
-package kr.lnsc.api.domain.link;
+package kr.lnsc.api.link.domain;
 
 import jakarta.persistence.*;
 import kr.lnsc.api.model.TimeBaseEntity;

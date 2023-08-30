@@ -1,8 +1,8 @@
-package kr.lnsc.api.domain.link;
+package kr.lnsc.api.link.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
-import kr.lnsc.api.domain.link.exception.InvalidUrlException;
+import kr.lnsc.api.link.exception.InvalidUrlException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

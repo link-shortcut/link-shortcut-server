@@ -1,6 +1,7 @@
 package kr.lnsc.api.domain.link;
 
-import kr.lnsc.api.domain.link.exception.InvalidUrlException;
+import kr.lnsc.api.link.domain.Url;
+import kr.lnsc.api.link.exception.InvalidUrlException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
