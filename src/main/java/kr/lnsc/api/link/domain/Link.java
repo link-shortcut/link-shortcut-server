@@ -50,6 +50,6 @@ public class Link extends TimeBaseEntity {
     }
 
     private static LocalDateTime toExpiredAt(LocalDate expireDate) {
-        return LocalDateTime.of(expireDate, LocalTime.MAX);
+        return LocalDateTime.of(expireDate.plusDays(1), LocalTime.MIN);
     }
 }
