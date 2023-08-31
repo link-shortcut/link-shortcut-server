@@ -8,4 +8,6 @@ import java.util.Optional;
 public interface LinkRepository extends JpaRepository<Link, Long> {
 
     Optional<Link> findByShortenPath(String shortenPath);
+
+    boolean existsByShortenPath(String shortenPath);
 }

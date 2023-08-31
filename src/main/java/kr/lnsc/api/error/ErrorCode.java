@@ -12,7 +12,8 @@ public enum ErrorCode {
     LINK_NOT_FOUND("404-01"),
 
     /* 500 */
-    UNHANDLED_ERROR("500-01");
+    UNHANDLED_ERROR("500-01"),
+    CAN_NOT_FOUND_UNIQUE_PATH("500-02");
 
     private final String value;
 
