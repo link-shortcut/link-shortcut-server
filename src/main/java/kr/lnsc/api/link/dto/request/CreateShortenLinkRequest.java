@@ -15,7 +15,6 @@ public class CreateShortenLinkRequest {
     @NotNull(message = "단축할 URL 주소를 입력해주세요.")
     private Url originalUrl;
 
-    @NotNull(message = "만료일자를 입력해주세요.")
     @ExpireTime
     private LocalDate expireDate;
 

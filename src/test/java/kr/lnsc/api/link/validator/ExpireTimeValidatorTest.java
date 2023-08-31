@@ -14,6 +14,18 @@ import static org.mockito.Mockito.mock;
 class ExpireTimeValidatorTest {
     private ExpireTimeValidator expireTimeValidator = new ExpireTimeValidator();
 
+    @DisplayName("입력한 만료일자가 null인 경우 유효성 검사에 실패한다.")
+    @Test
+    void expireDateIsNullFail() {
+        ConstraintValidatorContext context = mock(ConstraintValidatorContext.class);
+        given(context.buildConstraintViolationWithTemplate(anyString()))
+                .willReturn(mock(ConstraintValidatorContext.ConstraintViolationBuilder.class));
+
+        boolean isValid = expireTimeValidator.isValid(null, context);
+
+        assertThat(isValid).isFalse();
+    }
+
     @DisplayName("입력한 만료일자가 오늘보다 이전 날일 경우 유효성 검사에 실패한다.")
     @Test
     void expireDateIsAfterFail() {
