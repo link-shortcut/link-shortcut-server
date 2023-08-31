@@ -2,11 +2,14 @@ package kr.lnsc.api.link.domain;
 
 import jakarta.persistence.*;
 import kr.lnsc.api.model.TimeBaseEntity;
+import kr.lnsc.api.property.BaseUrlProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -38,7 +41,15 @@ public class Link extends TimeBaseEntity {
         this.expiredAt = expiredAt;
     }
 
-    public static Link createLink(Url originalUrl, String shortenPath, String expiredKey, LocalDateTime expiredAt) {
-        return new Link(null, originalUrl, shortenPath, expiredKey, expiredAt);
+    public static Link createLink(Url originalUrl, String shortenPath, String expiredKey, LocalDate expireDate) {
+        return new Link(null, originalUrl, shortenPath, expiredKey, toExpiredAt(expireDate));
+    }
+
+    public String shortenUrl() {
+        return String.format("%s/%s", BaseUrlProperty.getBaseUrl(), this.shortenPath);
+    }
+
+    private static LocalDateTime toExpiredAt(LocalDate expireDate) {
+        return LocalDateTime.of(expireDate, LocalTime.MAX);
     }
 }
