@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 @Embeddable
@@ -31,5 +32,18 @@ public class Url {
                 !PATTERN.matcher(value).matches()) {
             throw new InvalidUrlException();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Url url = (Url) o;
+        return Objects.equals(getValue(), url.getValue());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getValue());
     }
 }
