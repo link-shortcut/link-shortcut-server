@@ -1,6 +1,7 @@
 package kr.lnsc.api.error;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import kr.lnsc.api.error.exception.BusinessException;
 
 import java.time.LocalDateTime;
 
@@ -16,6 +17,10 @@ public class ExceptionResponse {
     public ExceptionResponse(String message, ErrorCode code) {
         this.message = message;
         this.code = code;
+    }
+
+    public static ExceptionResponse from(BusinessException e) {
+        return new ExceptionResponse(e.getMessage(), e.getCode());
     }
 
     public LocalDateTime getTimestamp() {

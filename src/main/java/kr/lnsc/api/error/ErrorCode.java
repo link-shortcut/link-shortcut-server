@@ -7,6 +7,7 @@ public enum ErrorCode {
 
     /* 400 */
     INVALID_URL("400-01"),
+    INVALID_REQUEST_VALUE("400-02"),
 
     /* 404 */
     LINK_NOT_FOUND("404-01"),
