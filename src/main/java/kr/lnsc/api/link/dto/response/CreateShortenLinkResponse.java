@@ -9,13 +9,15 @@ import java.time.LocalDateTime;
 public class CreateShortenLinkResponse {
     private String shortenUrl;
     private LocalDateTime expiredAt;
+    private String expireKey;
 
-    public CreateShortenLinkResponse(String shortenUrl, LocalDateTime expiredAt) {
+    public CreateShortenLinkResponse(String shortenUrl, LocalDateTime expiredAt, String expireKey) {
         this.shortenUrl = shortenUrl;
         this.expiredAt = expiredAt;
+        this.expireKey = expireKey;
     }
 
     public static CreateShortenLinkResponse from(Link link) {
-        return new CreateShortenLinkResponse(link.shortenUrl(), link.getExpiredAt());
+        return new CreateShortenLinkResponse(link.shortenUrl(), link.getExpiredAt(), link.getExpireKey());
     }
 }
