@@ -27,22 +27,22 @@ public class Link extends TimeBaseEntity {
     @Column(name = "shorten_Path", unique = true)
     private String shortenPath;
 
-    @Column(name = "expired_key")
-    private String expiredKey;
+    @Column(name = "expire_key")
+    private String expireKey;
 
     @Column(name = "expired_at", columnDefinition = "datetime(6)")
     private LocalDateTime expiredAt;
 
-    private Link(Long id, Url originalUrl, String shortenPath, String expiredKey, LocalDateTime expiredAt) {
+    private Link(Long id, Url originalUrl, String shortenPath, String expireKey, LocalDateTime expiredAt) {
         this.id = id;
         this.originalUrl = originalUrl;
         this.shortenPath = shortenPath;
-        this.expiredKey = expiredKey;
+        this.expireKey = expireKey;
         this.expiredAt = expiredAt;
     }
 
-    public static Link createLink(Url originalUrl, String shortenPath, String expiredKey, LocalDate expireDate) {
-        return new Link(null, originalUrl, shortenPath, expiredKey, toExpiredAt(expireDate));
+    public static Link createLink(Url originalUrl, String shortenPath, String expireKey, LocalDate expireDate) {
+        return new Link(null, originalUrl, shortenPath, expireKey, toExpiredAt(expireDate));
     }
 
     public String shortenUrl() {

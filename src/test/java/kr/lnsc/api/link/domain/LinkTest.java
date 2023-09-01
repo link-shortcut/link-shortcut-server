@@ -23,7 +23,7 @@ class LinkTest {
 
         assertThat(newLink.getOriginalUrl()).isEqualTo(ORIGINAL_URL);
         assertThat(newLink.getShortenPath()).isEqualTo(SHORTEN_PATH);
-        assertThat(newLink.getExpiredKey()).isEqualTo(EXPIRE_KEY);
+        assertThat(newLink.getExpireKey()).isEqualTo(EXPIRE_KEY);
 
         LocalDateTime expiredAt = newLink.getExpiredAt();
         assertThat(expiredAt.toLocalDate()).isEqualTo(TODAY);

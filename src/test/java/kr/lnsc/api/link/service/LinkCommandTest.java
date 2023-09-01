@@ -37,7 +37,7 @@ class LinkCommandTest extends ServiceTest {
         assertThat(findLink.getId()).isEqualTo(createdLink.getId());
         assertThat(findLink.getOriginalUrl()).isEqualTo(ORIGINAL_URL);
         assertThat(findLink.getShortenPath()).isNotNull();
-        assertThat(findLink.getExpiredKey()).isNotNull();
+        assertThat(findLink.getExpireKey()).isNotNull();
         assertThat(findLink.getCreatedAt()).isAfter(NOW);
     }
 
