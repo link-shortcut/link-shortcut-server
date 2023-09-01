@@ -15,10 +15,10 @@ import java.util.regex.Pattern;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Url {
-    private static final int URL_MAX_LENGTH = 2048;
+    public static final int URL_MAX_LENGTH = 2048;
     private static final Pattern PATTERN = Pattern.compile("https?:\\/\\/(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#()?&//=]*)");
 
-    @Column(length = URL_MAX_LENGTH)
+    @Column(name = "url", length = URL_MAX_LENGTH)
     private String value;
 
     public Url(String value) {
