@@ -26,7 +26,7 @@ class LinkTest {
         assertThat(newLink.getExpireKey()).isEqualTo(EXPIRE_KEY);
 
         LocalDateTime expiredAt = newLink.getExpiredAt();
-        assertThat(expiredAt.toLocalDate()).isEqualTo(TODAY);
-        assertThat(expiredAt.toLocalTime()).isEqualTo(LocalTime.MAX);
+        assertThat(expiredAt.toLocalDate()).isEqualTo(TODAY.plusDays(1));
+        assertThat(expiredAt.toLocalTime()).isEqualTo(LocalTime.MIN);
     }
 }
