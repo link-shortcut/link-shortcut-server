@@ -15,7 +15,7 @@ public class CreateShortenLinkResponse {
         this.expiredAt = expiredAt;
     }
 
-    public static CreateShortenLinkResponse of(Link link) {
+    public static CreateShortenLinkResponse from(Link link) {
         return new CreateShortenLinkResponse(link.shortenUrl(), link.getExpiredAt());
     }
 }
