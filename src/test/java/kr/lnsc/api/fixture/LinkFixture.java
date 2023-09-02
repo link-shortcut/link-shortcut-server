@@ -7,7 +7,8 @@ import java.time.LocalDate;
 
 public enum LinkFixture {
     EXAMPLE_TODAY_EXPIRED(new Url("http://www.example.com"), "aaaaaaa", "12345678", LocalDate.now()),
-    EXAMPLE_NEXT_DAY_EXPIRED(new Url("http://www.example.com"), "bbbbbbb", "11111111", LocalDate.now().plusDays(1));
+    EXAMPLE_NEXT_DAY_EXPIRED(new Url("http://www.example.com"), "bbbbbbb", "11111111", LocalDate.now().plusDays(1)),
+    EXAMPLE_ALREADY_EXPIRED(new Url("http://www.example.com"), "ccccccc", "87654321", LocalDate.now().minusDays(1));
 
     public final Url originalUrl;
     public final String shortenPath;
