@@ -7,6 +7,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.net.URI;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -47,6 +48,10 @@ public class Link extends TimeBaseEntity {
 
     public String shortenUrl() {
         return String.format("%s/%s", BaseUrlProperty.getBaseUrl(), this.shortenPath);
+    }
+
+    public URI originalUri() {
+        return URI.create(originalUrl.getValue());
     }
 
     private static LocalDateTime toExpiredAt(LocalDate expireDate) {

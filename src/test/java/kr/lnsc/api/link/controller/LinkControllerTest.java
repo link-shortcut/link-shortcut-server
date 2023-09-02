@@ -53,6 +53,18 @@ class LinkControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.expireKey").value(EXAMPLE_TODAY_EXPIRED.expireKey));
     }
 
+    @DisplayName("단축 URL로 접속 요쳥시 원래 URL로 리다이렉트한다.")
+    @Test
+    void accessLink() throws Exception {
+        given(linkHistoryCommand.accessLink(anyString()))
+                .willReturn(EXAMPLE_TODAY_EXPIRED.toLink());
+
+        mockMvc.perform(get("/{shortenPath}", EXAMPLE_TODAY_EXPIRED.shortenPath)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().is3xxRedirection())
+                .andExpect(header().string(HttpHeaders.LOCATION, EXAMPLE_TODAY_EXPIRED.originalUrl.getValue()));
+    }
+
     private static String toIsoLocalDateTime(LocalDateTime time) {
         return DateTimeFormatter.ISO_LOCAL_DATE_TIME.format(time);
     }
