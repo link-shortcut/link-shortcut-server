@@ -2,7 +2,8 @@ package kr.lnsc.api.link.controller;
 
 import kr.lnsc.api.link.dto.request.CreateShortenLinkRequest;
 import kr.lnsc.api.link.service.LinkCommand;
-import kr.lnsc.api.link.service.LinkHistoryCommand;
+import kr.lnsc.api.linkhistory.service.LinkHistoryCommand;
+import kr.lnsc.api.util.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;

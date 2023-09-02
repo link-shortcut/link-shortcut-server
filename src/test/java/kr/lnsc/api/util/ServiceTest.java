@@ -1,4 +1,4 @@
-package kr.lnsc.api.link.service;
+package kr.lnsc.api.util;
 
 import kr.lnsc.api.config.JpaConfig;
 import kr.lnsc.api.link.repository.LinkRepository;
@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Import;
 public class ServiceTest {
 
     @Autowired
-    private LinkRepository linkRepository;
+    protected LinkRepository linkRepository;
 
     @AfterEach
     void clear() {

@@ -4,6 +4,7 @@ import kr.lnsc.api.link.domain.Link;
 import kr.lnsc.api.link.dto.request.CreateShortenLinkRequest;
 import kr.lnsc.api.link.exception.CanNotFoundUniquePathException;
 import kr.lnsc.api.link.repository.LinkRepository;
+import kr.lnsc.api.util.ServiceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

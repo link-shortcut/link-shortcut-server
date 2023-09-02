@@ -1,7 +1,8 @@
-package kr.lnsc.api.link.controller;
+package kr.lnsc.api.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import kr.lnsc.api.link.controller.LinkController;
 import kr.lnsc.api.property.BaseUrlProperty;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
