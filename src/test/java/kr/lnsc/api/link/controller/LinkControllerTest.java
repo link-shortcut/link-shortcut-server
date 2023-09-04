@@ -1,14 +1,19 @@
 package kr.lnsc.api.link.controller;
 
+import kr.lnsc.api.link.domain.Link;
 import kr.lnsc.api.link.dto.request.CreateShortenLinkRequest;
 import kr.lnsc.api.link.service.LinkCommand;
+import kr.lnsc.api.link.service.LinkQuery;
 import kr.lnsc.api.linkhistory.service.LinkHistoryCommand;
+import kr.lnsc.api.linkhistory.service.LinkHistoryQuery;
 import kr.lnsc.api.util.ControllerTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
+import org.springframework.test.util.ReflectionTestUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -28,7 +33,13 @@ class LinkControllerTest extends ControllerTest {
     private LinkCommand linkCommand;
 
     @MockBean
+    private LinkQuery linkQuery;
+
+    @MockBean
     private LinkHistoryCommand linkHistoryCommand;
+
+    @MockBean
+    private LinkHistoryQuery linkHistoryQuery;
 
     @DisplayName("입력한 값을 바탕으로 단축 URL을 생성한다.")
     @Test
@@ -63,6 +74,33 @@ class LinkControllerTest extends ControllerTest {
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().is3xxRedirection())
                 .andExpect(header().string(HttpHeaders.LOCATION, EXAMPLE_TODAY_EXPIRED.originalUrl.getValue()));
+    }
+
+    @DisplayName("단축 URL의 통계 정보를 반환한다.")
+    @Test
+    void getLinkStatisticalInformation() throws Exception {
+        Link link = EXAMPLE_TODAY_EXPIRED.toLink();
+        LocalDateTime now = LocalDateTime.now();
+        ReflectionTestUtils.setField(link, "createdAt", now);
+
+        given(linkQuery.getLink(anyString()))
+                .willReturn(link);
+        given(linkHistoryQuery.getAccessCount(any(Link.class), any(LocalDate.class)))
+                .willReturn(0L);
+        given(linkHistoryQuery.getTotalAccessCount(any(Link.class)))
+                .willReturn(2L);
+
+        LocalDateTime expectedExpiredAt =
+                LocalDateTime.of(EXAMPLE_TODAY_EXPIRED.expireDate.plusDays(1), LocalTime.MIN);
+
+        mockMvc.perform(get("/{shortenPath}/info", EXAMPLE_TODAY_EXPIRED.shortenPath)
+                        .contentType(APPLICATION_JSON))
+                .andExpect(status().is2xxSuccessful())
+                .andExpect(jsonPath("$.originalUrl").value("http://www.example.com"))
+                .andExpect(jsonPath("$.dailyAccessCount").value(0L))
+                .andExpect(jsonPath("$.totalAccessCount").value(2L))
+                .andExpect(jsonPath("$.expiredAt").value(toIsoLocalDateTime(expectedExpiredAt)))
+                .andExpect(jsonPath("$.createdAt").value(toIsoLocalDateTime(now)));
     }
 
     private static String toIsoLocalDateTime(LocalDateTime time) {
