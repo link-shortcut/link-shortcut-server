@@ -1,0 +1,2 @@
+GET http://localhost:8080/{{shortenPath}}/info
+Content-Type: application/json
