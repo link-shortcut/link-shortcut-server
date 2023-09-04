@@ -54,6 +54,10 @@ public class Link extends TimeBaseEntity {
         return URI.create(originalUrl.getValue());
     }
 
+    public boolean isSameExpireKey(String expireKey) {
+        return this.expireKey.equals(expireKey);
+    }
+
     private static LocalDateTime toExpiredAt(LocalDate expireDate) {
         return LocalDateTime.of(expireDate.plusDays(1), LocalTime.MIN);
     }
