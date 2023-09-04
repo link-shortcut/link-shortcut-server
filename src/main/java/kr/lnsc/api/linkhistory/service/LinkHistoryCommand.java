@@ -25,4 +25,8 @@ public class LinkHistoryCommand {
         this.createHistory(findLink);
         return findLink;
     }
+
+    public void removeAllLinkHistory(Link link) {
+        linkHistoryRepository.deleteAllByLink(link);
+    }
 }

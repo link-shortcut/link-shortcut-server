@@ -16,4 +16,6 @@ public interface LinkHistoryRepository extends JpaRepository<LinkHistory, Long> 
             "GROUP BY date_only " +
             "ORDER BY date_only")
     List<LinkAccessCountDto> findAccessCountByDate(Link link);
+
+    void deleteAllByLink(Link link);
 }

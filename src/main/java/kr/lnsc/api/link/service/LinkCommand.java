@@ -4,8 +4,11 @@ import kr.lnsc.api.link.domain.Link;
 import kr.lnsc.api.link.domain.generator.ExpireKeyGenerator;
 import kr.lnsc.api.link.domain.generator.ShortenPathGenerator;
 import kr.lnsc.api.link.dto.request.CreateShortenLinkRequest;
+import kr.lnsc.api.link.dto.request.ExpireShortenLinkRequest;
 import kr.lnsc.api.link.exception.CanNotFoundUniquePathException;
+import kr.lnsc.api.link.exception.InvalidExpireKeyException;
 import kr.lnsc.api.link.repository.LinkRepository;
+import kr.lnsc.api.linkhistory.service.LinkHistoryCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +23,9 @@ public class LinkCommand {
     private final ShortenPathGenerator shortenPathGenerator;
     private final ExpireKeyGenerator expireKeyGenerator;
 
+    private final LinkQuery linkQuery;
+    private final LinkHistoryCommand linkHistoryCommand;
+
     public Link createLink(CreateShortenLinkRequest request) {
         String shortenPath = getUniqueShortenPath();
         String expireKey = expireKeyGenerator.generate();
@@ -31,6 +37,16 @@ public class LinkCommand {
                 request.getExpireDate()
         );
         return linkRepository.save(createdLink);
+    }
+
+    public void expireLink(ExpireShortenLinkRequest request) {
+        Link findLink = linkQuery.getLink(request.getShortenPath());
+
+        if (!findLink.isSameExpireKey(request.getExpireKey())) {
+            throw new InvalidExpireKeyException();
+        }
+        linkHistoryCommand.removeAllLinkHistory(findLink);
+        linkRepository.deleteById(findLink.getId());
     }
 
     private String getUniqueShortenPath() {
