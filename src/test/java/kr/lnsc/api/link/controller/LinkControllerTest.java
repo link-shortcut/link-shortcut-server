@@ -2,6 +2,7 @@ package kr.lnsc.api.link.controller;
 
 import kr.lnsc.api.link.domain.Link;
 import kr.lnsc.api.link.dto.request.CreateShortenLinkRequest;
+import kr.lnsc.api.link.dto.request.ExpireShortenLinkRequest;
 import kr.lnsc.api.link.service.LinkCommand;
 import kr.lnsc.api.link.service.LinkQuery;
 import kr.lnsc.api.linkhistory.service.LinkHistoryCommand;
@@ -22,6 +23,8 @@ import static kr.lnsc.api.fixture.LinkFixture.EXAMPLE_TODAY_EXPIRED;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -101,6 +104,21 @@ class LinkControllerTest extends ControllerTest {
                 .andExpect(jsonPath("$.totalAccessCount").value(2L))
                 .andExpect(jsonPath("$.expiredAt").value(toIsoLocalDateTime(expectedExpiredAt)))
                 .andExpect(jsonPath("$.createdAt").value(toIsoLocalDateTime(now)));
+    }
+
+    @DisplayName("단축 URL을 임의로 만료시키며, 단축 URL 통계 정보를 삭제한다.")
+    @Test
+    void expireShortenLink() throws Exception {
+        ExpireShortenLinkRequest request =
+                new ExpireShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.shortenPath, EXAMPLE_TODAY_EXPIRED.expireKey);
+
+        mockMvc.perform(
+                        post("/api/v1/expire")
+                                .contentType(APPLICATION_JSON)
+                                .content(objectMapper.writeValueAsBytes(request)))
+                .andExpect(status().isOk());
+
+        verify(linkCommand, times(1)).expireLink(any(ExpireShortenLinkRequest.class));
     }
 
     private static String toIsoLocalDateTime(LocalDateTime time) {

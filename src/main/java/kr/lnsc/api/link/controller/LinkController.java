@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import kr.lnsc.api.link.domain.Link;
 import kr.lnsc.api.link.dto.request.CreateShortenLinkRequest;
+import kr.lnsc.api.link.dto.request.ExpireShortenLinkRequest;
 import kr.lnsc.api.link.dto.response.CreateShortenLinkResponse;
 import kr.lnsc.api.link.dto.response.GetLinkStatInfoResponse;
 import kr.lnsc.api.link.service.LinkCommand;
@@ -34,6 +35,12 @@ public class LinkController {
     public CreateShortenLinkResponse createShortenLink(@Validated @RequestBody CreateShortenLinkRequest request) {
         Link newLink = linkCommand.createLink(request);
         return CreateShortenLinkResponse.from(newLink);
+    }
+
+    @Operation(summary = "단축 URL 임의 만료", description = "해당 단축 URL을 임의로 만료합니다.")
+    @PostMapping("api/v1/expire")
+    public void expireShortenLink(@Validated @RequestBody ExpireShortenLinkRequest request) {
+        linkCommand.expireLink(request);
     }
 
     @Operation(summary = "단축 URL 접속", description = "단축 URL로 접속하면 원래 URL로 리다이렉트됩니다.")
