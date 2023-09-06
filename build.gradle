@@ -48,3 +48,16 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+def profile = project.hasProperty("profile") ? project.property("profile").toString() : "dev"
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ["src/main/java"]
+        }
+        resources {
+            srcDirs = ["src/main/resources", "src/main/resources-${profile}"]
+        }
+    }
+}
