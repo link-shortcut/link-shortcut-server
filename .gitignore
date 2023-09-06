@@ -38,3 +38,6 @@ out/
 
 ### Environment File ###
 application-env.yml
+
+### Log File ###
+spy.log
