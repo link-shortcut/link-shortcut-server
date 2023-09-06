@@ -39,7 +39,7 @@ class LinkRestControllerTest extends ControllerTest {
         LocalDateTime expectedExpiredAt =
                 LocalDateTime.of(EXAMPLE_TODAY_EXPIRED.expireDate.plusDays(1), LocalTime.MIN);
         mockMvc.perform(
-                        post("/api/v1/create")
+                        post("/api/link/create")
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk())
@@ -67,7 +67,7 @@ class LinkRestControllerTest extends ControllerTest {
         LocalDateTime expectedExpiredAt =
                 LocalDateTime.of(EXAMPLE_TODAY_EXPIRED.expireDate.plusDays(1), LocalTime.MIN);
 
-        mockMvc.perform(get("/{shortenPath}/info", EXAMPLE_TODAY_EXPIRED.shortenPath)
+        mockMvc.perform(get("/api/link/{shortenPath}", EXAMPLE_TODAY_EXPIRED.shortenPath)
                         .contentType(APPLICATION_JSON))
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(jsonPath("$.originalUrl").value("http://www.example.com"))
@@ -84,7 +84,7 @@ class LinkRestControllerTest extends ControllerTest {
                 new ExpireShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.shortenPath, EXAMPLE_TODAY_EXPIRED.expireKey);
 
         mockMvc.perform(
-                        post("/api/v1/expire")
+                        post("/api/link/expire")
                                 .contentType(APPLICATION_JSON)
                                 .content(objectMapper.writeValueAsBytes(request)))
                 .andExpect(status().isOk());

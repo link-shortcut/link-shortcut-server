@@ -3,7 +3,7 @@
     client.global.set("EXPIRE_DATE", "2023-09-07")
 %}
 
-POST http://localhost:8080/api/v1/create
+POST http://localhost:8080/api/link/create
 Content-Type: application/json
 
 {

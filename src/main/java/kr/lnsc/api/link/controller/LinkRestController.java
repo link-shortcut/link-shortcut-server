@@ -26,20 +26,20 @@ public class LinkRestController {
     private final LinkHistoryQuery linkHistoryQuery;
 
     @Operation(summary = "단축 URL 생성", description = "URL과 만료일자를 입력해 단축 URL을 생성합니다.")
-    @PostMapping("api/v1/create")
+    @PostMapping("/api/link/create")
     public CreateShortenLinkResponse createShortenLink(@Validated @RequestBody CreateShortenLinkRequest request) {
         Link newLink = linkCommand.createLink(request);
         return CreateShortenLinkResponse.from(newLink);
     }
 
     @Operation(summary = "단축 URL 임의 만료", description = "해당 단축 URL을 임의로 만료합니다.")
-    @PostMapping("api/v1/expire")
+    @PostMapping("/api/link/expire")
     public void expireShortenLink(@Validated @RequestBody ExpireShortenLinkRequest request) {
         linkCommand.expireLink(request);
     }
 
     @Operation(summary = "단축 URL 통계 정보 조회", description = "해당 단축 URL의 통계 정보를 조회합니다.")
-    @GetMapping("/{shortenPath}/info")
+    @GetMapping("/api/link/{shortenPath}")
     public GetLinkStatInfoResponse getLinkStatisticalInformation(
             @Parameter(description = "단축 URL Path") @PathVariable String shortenPath
     ) {
