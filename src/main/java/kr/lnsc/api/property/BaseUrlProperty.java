@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 public class BaseUrlProperty {
     private static String baseUrl;
 
-    public BaseUrlProperty(@Value("${env.base-url}") String baseUrl) {
+    public BaseUrlProperty(@Value("${base-url}") String baseUrl) {
         this.baseUrl = baseUrl;
     }
 
