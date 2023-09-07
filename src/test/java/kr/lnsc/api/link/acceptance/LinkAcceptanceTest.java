@@ -27,7 +27,7 @@ public class LinkAcceptanceTest extends AcceptanceTest {
     @Test
     void createLink() {
         CreateShortenLinkRequest request =
-                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl, EXAMPLE_TODAY_EXPIRED.expireDate);
+                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl.getValue(), EXAMPLE_TODAY_EXPIRED.expireDate);
 
         ExtractableResponse<Response> response = httpPost(request, "/api/link/create");
         CreateShortenLinkResponse responseDto = response.body().as(CreateShortenLinkResponse.class);
@@ -42,7 +42,7 @@ public class LinkAcceptanceTest extends AcceptanceTest {
     @Test
     void createLinkWithSameOriginalURL() {
         CreateShortenLinkRequest request =
-                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl, EXAMPLE_TODAY_EXPIRED.expireDate);
+                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl.getValue(), EXAMPLE_TODAY_EXPIRED.expireDate);
 
         ExtractableResponse<Response> firstResponse = httpPost(request, "/api/link/create");
         assertThat(firstResponse.statusCode()).isEqualTo(HttpStatus.OK.value());

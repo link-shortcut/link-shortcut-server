@@ -39,7 +39,7 @@ class LinkCommandTest extends ServiceTest {
     @Test
     void createLink() {
         CreateShortenLinkRequest request =
-                new CreateShortenLinkRequest(EXAMPLE_NEXT_DAY_EXPIRED.originalUrl, EXAMPLE_NEXT_DAY_EXPIRED.expireDate);
+                new CreateShortenLinkRequest(EXAMPLE_NEXT_DAY_EXPIRED.originalUrl.getValue(), EXAMPLE_NEXT_DAY_EXPIRED.expireDate);
         Link createdLink = linkCommand.createLink(request);
 
         Link findLink = linkRepository.findAll().get(0);
@@ -65,7 +65,7 @@ class LinkCommandTest extends ServiceTest {
                 linkHistoryCommand
         );
         CreateShortenLinkRequest request =
-                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl, EXAMPLE_TODAY_EXPIRED.expireDate);
+                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl.getValue(), EXAMPLE_TODAY_EXPIRED.expireDate);
 
         customLinkCommand.createLink(request);
 
