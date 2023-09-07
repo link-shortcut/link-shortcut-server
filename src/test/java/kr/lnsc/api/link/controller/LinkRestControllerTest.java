@@ -31,7 +31,7 @@ class LinkRestControllerTest extends ControllerTest {
     @Test
     void createShortenLink() throws Exception {
         CreateShortenLinkRequest request =
-                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl, EXAMPLE_TODAY_EXPIRED.expireDate);
+                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl.getValue(), EXAMPLE_TODAY_EXPIRED.expireDate);
 
         given(linkCommand.createLink(any(CreateShortenLinkRequest.class)))
                 .willReturn(EXAMPLE_TODAY_EXPIRED.toLink());
