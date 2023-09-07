@@ -7,7 +7,6 @@ import kr.lnsc.api.link.exception.CanNotFoundUniquePathException;
 import kr.lnsc.api.link.exception.InvalidExpireKeyException;
 import kr.lnsc.api.link.repository.LinkRepository;
 import kr.lnsc.api.linkhistory.domain.LinkHistory;
-import kr.lnsc.api.linkhistory.repository.LinkHistoryRepository;
 import kr.lnsc.api.linkhistory.service.LinkHistoryCommand;
 import kr.lnsc.api.util.ServiceTest;
 import org.junit.jupiter.api.DisplayName;

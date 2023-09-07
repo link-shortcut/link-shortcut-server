@@ -4,12 +4,10 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import kr.lnsc.api.link.domain.Url;
 import kr.lnsc.api.link.validator.ExpireTime;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
-@Getter
 @NoArgsConstructor
 public class CreateShortenLinkRequest {
 
@@ -24,5 +22,13 @@ public class CreateShortenLinkRequest {
     public CreateShortenLinkRequest(Url originalUrl, LocalDate expireDate) {
         this.originalUrl = originalUrl;
         this.expireDate = expireDate;
+    }
+
+    public String getOriginalUrl() {
+        return originalUrl.getValue();
+    }
+
+    public LocalDate getExpireDate() {
+        return expireDate;
     }
 }

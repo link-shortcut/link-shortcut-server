@@ -1,6 +1,7 @@
 package kr.lnsc.api.link.service;
 
 import kr.lnsc.api.link.domain.Link;
+import kr.lnsc.api.link.domain.Url;
 import kr.lnsc.api.link.domain.generator.ExpireKeyGenerator;
 import kr.lnsc.api.link.domain.generator.ShortenPathGenerator;
 import kr.lnsc.api.link.dto.request.CreateShortenLinkRequest;
@@ -31,7 +32,7 @@ public class LinkCommand {
         String expireKey = expireKeyGenerator.generate();
 
         Link createdLink = Link.createLink(
-                request.getOriginalUrl(),
+                new Url(request.getOriginalUrl()),
                 shortenPath,
                 expireKey,
                 request.getExpireDate()
