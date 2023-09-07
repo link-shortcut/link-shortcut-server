@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '3.1.3'
     id 'io.spring.dependency-management' version '1.1.3'
+    id 'jacoco'
 }
 
 group = 'kr.lnsc'
@@ -9,6 +10,10 @@ version = '0.0.1-SNAPSHOT'
 
 java {
     sourceCompatibility = '17'
+}
+
+jacoco {
+    toolVersion = '0.8.10'
 }
 
 configurations {
@@ -63,4 +68,44 @@ sourceSets {
             srcDirs = ["src/main/resources", "src/main/resources-${profile}"]
         }
     }
+}
+
+jacocoTestReport {
+    reports {
+        html.required = true
+        xml.required = false
+        csv.required = false
+
+        html.outputLocation = layout.buildDirectory.dir('jacoco/html')
+    }
+}
+
+jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                counter = "METHOD"
+                value = "COVEREDRATIO"
+                minimum = 0.90
+            }
+
+            limit {
+                counter = "LINE"
+                value = "COVEREDRATIO"
+                minimum = 0.80
+            }
+        }
+    }
+}
+
+task testCoverage(type: Test) {
+    group 'verification'
+    description 'Runs the unit tests with coverage'
+
+    dependsOn(':test',
+            ':jacocoTestReport',
+            ':jacocoTestCoverageVerification')
+
+    tasks['jacocoTestReport'].mustRunAfter(tasks['test'])
+    tasks['jacocoTestCoverageVerification'].mustRunAfter(tasks['jacocoTestReport'])
 }
