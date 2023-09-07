@@ -1,0 +1,2 @@
+GET http://localhost:8080/api/link/{{shortenPath}}
+Content-Type: application/json

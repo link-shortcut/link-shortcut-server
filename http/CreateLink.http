@@ -1,0 +1,17 @@
+< {%
+    client.global.set("ORIGINAL_URL", "http://www.naver.com");
+    client.global.set("EXPIRE_DATE", "2023-09-07")
+%}
+
+POST http://localhost:8080/api/link/create
+Content-Type: application/json
+
+{
+  "originalUrl": "{{ORIGINAL_URL}}",
+  "expireDate": "{{EXPIRE_DATE}}"
+}
+
+> {%
+    client.global.set("shortenPath", response.body.shortenUrl.split("/")[3]);
+    client.global.set("expireKey", response.body.expireKey);
+%}

@@ -35,3 +35,9 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Environment File ###
+application-env.yml
+
+### Log File ###
+spy.log

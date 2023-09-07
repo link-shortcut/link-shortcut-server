@@ -4,7 +4,17 @@ import lombok.Getter;
 
 @Getter
 public enum ErrorCode {
-    UNHANDLED_ERROR("500-01");
+
+    /* 400 */
+    INVALID_URL("400-01"),
+    INVALID_REQUEST_VALUE("400-02"),
+
+    /* 404 */
+    LINK_NOT_FOUND("404-01"),
+
+    /* 500 */
+    UNHANDLED_ERROR("500-01"),
+    CAN_NOT_FOUND_UNIQUE_PATH("500-02");
 
     private final String value;
 
