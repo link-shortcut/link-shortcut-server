@@ -11,4 +11,4 @@ spring:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
     url: jdbc:tc:mysql:8:///test
 
-base-url: https://www.test.kr
+BASE_URL: https://www.test.kr

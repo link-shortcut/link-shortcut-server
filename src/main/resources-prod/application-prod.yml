@@ -1,7 +1,7 @@
 spring:
   config:
     activate:
-      on-profile: dev
+      on-profile: prod
 
   jpa:
     hibernate:
@@ -12,6 +12,6 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${prod-db-url}
-    username: ${prod-db-user}
-    password: ${prod-db-pw}
+    url: ${PROD_DB_URL}
+    username: ${PROD_DB_USER}
+    password: ${PROD_DB_PW}
