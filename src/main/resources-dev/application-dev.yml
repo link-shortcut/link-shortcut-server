@@ -12,6 +12,6 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: ${dev-db-url}
-    username: ${dev-db-user}
-    password: ${dev-db-pw}
+    url: ${DEV_DB_URL}
+    username: ${DEV_DB_USER}
+    password: ${DEV_DB_PW}
