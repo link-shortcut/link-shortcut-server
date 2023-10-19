@@ -15,3 +15,7 @@ spring:
     url: ${PROD_DB_URL}
     username: ${PROD_DB_USER}
     password: ${PROD_DB_PW}
+
+path-generator:
+  type: external
+  url: ${PROD_PATH_GENERATOR_SERVER_URL}
