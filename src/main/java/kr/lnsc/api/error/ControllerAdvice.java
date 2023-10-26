@@ -2,6 +2,7 @@ package kr.lnsc.api.error;
 
 import kr.lnsc.api.error.exception.InvalidValueException;
 import kr.lnsc.api.error.exception.ResourceNotFoundException;
+import kr.lnsc.api.ratelimit.exception.RateLimitExceededException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
@@ -37,6 +38,13 @@ public class ControllerAdvice {
     @ExceptionHandler(InvalidValueException.class)
     public ExceptionResponse handleInvalidValueException(InvalidValueException e) {
         log.error("handleInvalidValueException", e);
+        return ExceptionResponse.from(e);
+    }
+
+    @ResponseStatus(HttpStatus.TOO_MANY_REQUESTS)
+    @ExceptionHandler(RateLimitExceededException.class)
+    public ExceptionResponse handleRateLimitExceededException(RateLimitExceededException e) {
+        log.error("RateLimitExceededException", e);
         return ExceptionResponse.from(e);
     }
 
