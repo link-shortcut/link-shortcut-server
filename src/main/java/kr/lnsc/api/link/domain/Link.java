@@ -25,7 +25,7 @@ public class Link extends TimeBaseEntity {
     @AttributeOverride(name = "value", column = @Column(name = "original_url", length = Url.URL_MAX_LENGTH))
     private Url originalUrl;
 
-    @Column(name = "shorten_path", unique = true)
+    @Column(name = "shorten_path", unique = true, columnDefinition = "varbinary(10)")
     private String shortenPath;
 
     @Column(name = "expire_key")
