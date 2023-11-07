@@ -3,11 +3,17 @@ package kr.lnsc.api.link.domain;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import kr.lnsc.api.link.exception.InvalidUrlException;
+import kr.lnsc.api.property.BaseUrlProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.util.StringUtils;
 
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
@@ -29,8 +35,31 @@ public class Url {
     private void validate(String value) {
         if (!StringUtils.hasText(value) ||
                 value.length() > URL_MAX_LENGTH ||
-                !PATTERN.matcher(value).matches()) {
+                !PATTERN.matcher(value).matches() ||
+                PermittedHost.HOSTS.contains(extractHost(value))) {
             throw new InvalidUrlException();
+        }
+    }
+
+    public static List<String> permittedHosts(String... urlSpecs) {
+        List<String> permittedHosts = new ArrayList<>();
+
+        for (String spec : urlSpecs) {
+            String host = extractHost(spec);
+            if (host.startsWith("www.")) {
+                permittedHosts.add(host.split("www.")[1]);
+            }
+            permittedHosts.add(host);
+        }
+
+        return Collections.unmodifiableList(permittedHosts);
+    }
+
+    private static String extractHost(String urlSpec) {
+        try {
+            return new URL(urlSpec).getHost();
+        } catch (MalformedURLException e) {
+            throw new IllegalArgumentException(e);
         }
     }
 
@@ -45,5 +74,10 @@ public class Url {
     @Override
     public int hashCode() {
         return Objects.hash(getValue());
+    }
+
+    private static class PermittedHost {
+        private static final String[] URL_SPECS_FOR_PERMISSION = {BaseUrlProperty.getBaseUrl()};
+        private static final List<String> HOSTS = permittedHosts(URL_SPECS_FOR_PERMISSION);
     }
 }
