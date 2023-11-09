@@ -11,6 +11,7 @@ import kr.lnsc.api.link.exception.InvalidExpireKeyException;
 import kr.lnsc.api.link.repository.LinkRepository;
 import kr.lnsc.api.linkhistory.service.LinkHistoryCommand;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ public class LinkCommand {
         return linkRepository.save(createdLink);
     }
 
+    @CacheEvict(value = "link", key = "#request.shortenPath")
     public void expireLink(ExpireShortenLinkRequest request) {
         Link findLink = linkQuery.getLink(request.getShortenPath());
 
