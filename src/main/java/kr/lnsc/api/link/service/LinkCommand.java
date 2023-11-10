@@ -52,6 +52,12 @@ public class LinkCommand {
         linkRepository.deleteById(findLink.getId());
     }
 
+    public Link accessLink(String shortenPath) {
+        Link findLink = linkQuery.getLink(shortenPath);
+        linkHistoryCommand.createHistoryAsync(findLink);
+        return findLink;
+    }
+
     private String getUniqueShortenPath() {
         int attempt = 0;
         while (attempt < ATTEMPT_LIMIT) {

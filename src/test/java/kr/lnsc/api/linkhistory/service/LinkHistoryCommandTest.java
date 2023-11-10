@@ -27,15 +27,4 @@ class LinkHistoryCommandTest extends ServiceTest {
         assertThat(findLinkHistory.getId()).isEqualTo(createdLinkHistory.getId());
         assertThat(findLinkHistory.getLink().getId()).isEqualTo(link.getId());
     }
-
-    @DisplayName("단축 Path로 Link를 찾은 후 LinkHistory를 생성하고, 해당 Link를 반환한다.")
-    @Test
-    void accessLinkSuccess() {
-        Link link = linkRepository.save(EXAMPLE_TODAY_EXPIRED.toLink());
-        Link accessLink = linkHistoryCommand.accessLink(EXAMPLE_TODAY_EXPIRED.shortenPath);
-
-        LinkHistory createdLinkHistory = linkHistoryRepository.findAll().get(0);
-        assertThat(link.getId()).isEqualTo(accessLink.getId());
-        assertThat(createdLinkHistory.getLink().getId()).isEqualTo(link.getId());
-    }
 }

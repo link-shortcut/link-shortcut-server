@@ -18,7 +18,7 @@ public class LinkControllerTest extends ControllerTest {
     @DisplayName("단축 URL로 접속 요쳥시 원래 URL로 리다이렉트한다.")
     @Test
     void accessLink() throws Exception {
-        given(linkHistoryCommand.accessLink(anyString()))
+        given(linkCommand.accessLink(anyString()))
                 .willReturn(EXAMPLE_TODAY_EXPIRED.toLink());
 
         mockMvc.perform(get("/{shortenPath}", EXAMPLE_TODAY_EXPIRED.shortenPath)
