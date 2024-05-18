@@ -2,10 +2,10 @@ package kr.lnsc.api.link.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import kr.lnsc.api.link.dto.request.CreateShortenLinkRequest;
-import kr.lnsc.api.link.dto.request.ExpireShortenLinkRequest;
-import kr.lnsc.api.link.dto.response.CreateShortenLinkResponse;
-import kr.lnsc.api.link.dto.response.GetLinkStatInfoResponse;
+import kr.lnsc.api.system.link.presentation.request.CreateShortenLinkRequest;
+import kr.lnsc.api.system.link.presentation.request.ExpireShortenLinkRequest;
+import kr.lnsc.api.system.link.presentation.response.CreateShortenLinkResponse;
+import kr.lnsc.api.system.link.presentation.response.GetLinkStatInfoResponse;
 import kr.lnsc.api.util.AcceptanceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

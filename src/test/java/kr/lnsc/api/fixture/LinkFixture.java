@@ -1,7 +1,7 @@
 package kr.lnsc.api.fixture;
 
-import kr.lnsc.api.link.domain.Link;
-import kr.lnsc.api.link.domain.Url;
+import kr.lnsc.api.system.link.domain.Link;
+import kr.lnsc.api.system.link.domain.Url;
 
 import java.time.LocalDate;
 

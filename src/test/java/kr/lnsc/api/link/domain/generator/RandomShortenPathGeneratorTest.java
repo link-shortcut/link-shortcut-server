@@ -1,5 +1,6 @@
 package kr.lnsc.api.link.domain.generator;
 
+import kr.lnsc.api.system.link.domain.generator.RandomShortenPathGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.RepeatedTest;
 

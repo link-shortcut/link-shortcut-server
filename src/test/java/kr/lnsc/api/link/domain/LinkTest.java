@@ -1,5 +1,6 @@
 package kr.lnsc.api.link.domain;
 
+import kr.lnsc.api.system.link.domain.Link;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

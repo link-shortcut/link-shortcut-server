@@ -1,8 +1,8 @@
 package kr.lnsc.api.util;
 
-import kr.lnsc.api.config.JpaConfig;
-import kr.lnsc.api.link.repository.LinkRepository;
-import kr.lnsc.api.linkhistory.repository.LinkHistoryRepository;
+import kr.lnsc.api.context.config.JpaConfig;
+import kr.lnsc.api.system.link.domain.LinkRepository;
+import kr.lnsc.api.system.linkhistory.domain.LinkHistoryRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

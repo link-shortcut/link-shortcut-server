@@ -1,5 +1,7 @@
 package kr.lnsc.api.link.domain.generator;
 
+import kr.lnsc.api.system.link.domain.generator.ExpireKeyGenerator;
+import kr.lnsc.api.system.link.domain.generator.UuidExpireKeyGenerator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

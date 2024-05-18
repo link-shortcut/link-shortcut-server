@@ -1,6 +1,7 @@
 package kr.lnsc.api.link.validator;
 
 import jakarta.validation.ConstraintValidatorContext;
+import kr.lnsc.api.system.link.presentation.ExpireTimeValidator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
