@@ -37,6 +37,7 @@ out/
 .vscode/
 
 ### Environment File ###
+.env
 application-env.yml
 
 ### Log File ###
