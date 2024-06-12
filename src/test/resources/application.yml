@@ -9,6 +9,6 @@ spring:
 
   datasource:
     driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
-    url: jdbc:tc:mysql:8:///test
+    url: jdbc:tc:mysql:8:///test?TC_MY_CNF=mysql_conf_override
 
 BASE_URL: https://www.test.kr
