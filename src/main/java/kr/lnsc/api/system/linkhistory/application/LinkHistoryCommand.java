@@ -4,16 +4,14 @@ import kr.lnsc.api.system.link.domain.Link;
 import kr.lnsc.api.system.linkhistory.domain.LinkHistory;
 import kr.lnsc.api.system.linkhistory.domain.LinkHistoryRepository;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
 @Service
+@Transactional
 @RequiredArgsConstructor
-@Slf4j
 public class LinkHistoryCommand {
     private final LinkHistoryRepository linkHistoryRepository;
 
