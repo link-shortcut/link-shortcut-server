@@ -1,14 +1,12 @@
 package kr.lnsc.api.system.link.application;
 
 import kr.lnsc.api.system.link.domain.Link;
+import kr.lnsc.api.system.link.domain.LinkRepository;
 import kr.lnsc.api.system.link.domain.Url;
 import kr.lnsc.api.system.link.domain.generator.ExpireKeyGenerator;
-import kr.lnsc.api.system.link.domain.generator.ShortenPathGenerator;
+import kr.lnsc.api.system.link.exception.InvalidExpireKeyException;
 import kr.lnsc.api.system.link.presentation.request.CreateShortenLinkRequest;
 import kr.lnsc.api.system.link.presentation.request.ExpireShortenLinkRequest;
-import kr.lnsc.api.system.link.exception.CanNotFoundUniquePathException;
-import kr.lnsc.api.system.link.exception.InvalidExpireKeyException;
-import kr.lnsc.api.system.link.domain.LinkRepository;
 import kr.lnsc.api.system.linkhistory.application.LinkHistoryCommand;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
@@ -19,17 +17,15 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class LinkCommand {
-    private static final int ATTEMPT_LIMIT = 30;
-
     private final LinkRepository linkRepository;
-    private final ShortenPathGenerator shortenPathGenerator;
     private final ExpireKeyGenerator expireKeyGenerator;
+    private final UniqueLinkCreator uniqueLinkCreator;
 
     private final LinkQuery linkQuery;
     private final LinkHistoryCommand linkHistoryCommand;
 
     public Link createLink(CreateShortenLinkRequest request) {
-        String shortenPath = getUniqueShortenPath();
+        String shortenPath = uniqueLinkCreator.create();
         String expireKey = expireKeyGenerator.generate();
 
         Link createdLink = Link.createLink(
@@ -56,17 +52,5 @@ public class LinkCommand {
         Link findLink = linkQuery.getLink(shortenPath);
         linkHistoryCommand.createHistoryAsync(findLink);
         return findLink;
-    }
-
-    private String getUniqueShortenPath() {
-        int attempt = 0;
-        while (attempt < ATTEMPT_LIMIT) {
-            String generatedShortenPath = shortenPathGenerator.generate();
-            if (!linkRepository.existsByShortenPath(generatedShortenPath)) {
-                return generatedShortenPath;
-            }
-            attempt++;
-        }
-        throw new CanNotFoundUniquePathException();
     }
 }
