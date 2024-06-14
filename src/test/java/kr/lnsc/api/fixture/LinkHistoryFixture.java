@@ -1,7 +1,7 @@
 package kr.lnsc.api.fixture;
 
-import kr.lnsc.api.link.domain.Link;
-import kr.lnsc.api.linkhistory.domain.LinkHistory;
+import kr.lnsc.api.system.link.domain.Link;
+import kr.lnsc.api.system.linkhistory.domain.LinkHistory;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.time.LocalDateTime;
