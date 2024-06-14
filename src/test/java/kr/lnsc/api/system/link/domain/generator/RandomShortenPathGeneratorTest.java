@@ -1,4 +1,4 @@
-package kr.lnsc.api.link.domain.generator;
+package kr.lnsc.api.system.link.domain.generator;
 
 import kr.lnsc.api.system.link.domain.generator.RandomShortenPathGenerator;
 import org.junit.jupiter.api.DisplayName;

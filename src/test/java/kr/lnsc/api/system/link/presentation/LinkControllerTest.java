@@ -1,4 +1,4 @@
-package kr.lnsc.api.link.presentation;
+package kr.lnsc.api.system.link.presentation;
 
 import kr.lnsc.api.util.ControllerTest;
 import org.junit.jupiter.api.DisplayName;

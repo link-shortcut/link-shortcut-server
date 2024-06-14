@@ -1,4 +1,4 @@
-package kr.lnsc.api.link.presentation;
+package kr.lnsc.api.system.link.presentation;
 
 import kr.lnsc.api.system.link.domain.Link;
 import kr.lnsc.api.system.link.presentation.request.CreateShortenLinkRequest;

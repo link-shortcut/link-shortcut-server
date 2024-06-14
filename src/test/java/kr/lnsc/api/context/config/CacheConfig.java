@@ -1,4 +1,4 @@
-package kr.lnsc.api.config;
+package kr.lnsc.api.context.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.cache.CacheManager;

@@ -1,8 +1,7 @@
-package kr.lnsc.api.linkhistory.application;
+package kr.lnsc.api.system.linkhistory.application;
 
 import kr.lnsc.api.fixture.LinkHistoryFixture;
 import kr.lnsc.api.system.link.domain.Link;
-import kr.lnsc.api.system.linkhistory.application.LinkHistoryQuery;
 import kr.lnsc.api.system.linkhistory.domain.LinkHistory;
 import kr.lnsc.api.system.link.presentation.response.LinkAccessCountDto;
 import kr.lnsc.api.util.ServiceTest;

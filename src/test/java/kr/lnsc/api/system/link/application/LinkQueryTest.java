@@ -1,6 +1,5 @@
-package kr.lnsc.api.link.application;
+package kr.lnsc.api.system.link.application;
 
-import kr.lnsc.api.system.link.application.LinkQuery;
 import kr.lnsc.api.system.link.domain.Link;
 import kr.lnsc.api.system.link.exception.LinkNotFoundException;
 import kr.lnsc.api.util.ServiceTest;

@@ -1,4 +1,4 @@
-package kr.lnsc.api.link.acceptance;
+package kr.lnsc.api.system.link.acceptance;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;

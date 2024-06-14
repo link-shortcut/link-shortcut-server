@@ -1,4 +1,4 @@
-package kr.lnsc.api.config;
+package kr.lnsc.api.context.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;
@@ -12,7 +12,7 @@ import java.util.concurrent.Executor;
 public class AsyncConfig {
 
     @Bean
-    public Executor executor() {
+    public Executor taskExecutor() {
         return new SyncTaskExecutor();
     }
 }

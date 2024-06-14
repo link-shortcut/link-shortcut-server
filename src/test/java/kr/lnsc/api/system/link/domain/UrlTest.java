@@ -1,4 +1,4 @@
-package kr.lnsc.api.domain.link;
+package kr.lnsc.api.system.link.domain;
 
 import kr.lnsc.api.system.link.domain.Url;
 import kr.lnsc.api.system.link.exception.InvalidUrlException;

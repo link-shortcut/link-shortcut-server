@@ -1,7 +1,6 @@
-package kr.lnsc.api.linkhistory.application;
+package kr.lnsc.api.system.linkhistory.application;
 
 import kr.lnsc.api.system.link.domain.Link;
-import kr.lnsc.api.system.linkhistory.application.LinkHistoryCommand;
 import kr.lnsc.api.system.linkhistory.domain.LinkHistory;
 import kr.lnsc.api.util.ServiceTest;
 import org.assertj.core.api.Fail;
