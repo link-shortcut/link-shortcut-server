@@ -1,19 +1,18 @@
-package kr.lnsc.api.link.application;
+package kr.lnsc.api.system.link.application;
 
-import kr.lnsc.api.system.link.application.LinkCommand;
-import kr.lnsc.api.system.link.application.LinkQuery;
 import kr.lnsc.api.system.link.domain.Link;
-import kr.lnsc.api.system.link.presentation.request.CreateShortenLinkRequest;
-import kr.lnsc.api.system.link.presentation.request.ExpireShortenLinkRequest;
+import kr.lnsc.api.system.link.domain.LinkRepository;
 import kr.lnsc.api.system.link.exception.CanNotFoundUniquePathException;
 import kr.lnsc.api.system.link.exception.InvalidExpireKeyException;
-import kr.lnsc.api.system.link.domain.LinkRepository;
-import kr.lnsc.api.system.linkhistory.domain.LinkHistory;
+import kr.lnsc.api.system.link.presentation.request.CreateShortenLinkRequest;
+import kr.lnsc.api.system.link.presentation.request.ExpireShortenLinkRequest;
 import kr.lnsc.api.system.linkhistory.application.LinkHistoryCommand;
+import kr.lnsc.api.system.linkhistory.domain.LinkHistory;
 import kr.lnsc.api.util.ServiceTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -37,6 +36,9 @@ class LinkCommandTest extends ServiceTest {
     @Autowired
     private LinkHistoryCommand linkHistoryCommand;
 
+    @Autowired
+    private ApplicationEventPublisher eventPublisher;
+
     @DisplayName("요청한 정보로 Link 객체를 생성한다.")
     @Test
     void createLink() {
@@ -59,12 +61,14 @@ class LinkCommandTest extends ServiceTest {
     @DisplayName("일정 시도 횟수로도 고유한 단축 Path를 얻지 못하면 예외가 발생한다.")
     @Test
     void uniqueShortenPathFail() {
+        UniqueLinkCreator uniqueLinkCreator = new UniqueLinkCreator(linkRepository, () -> "12345678");
         LinkCommand customLinkCommand = new LinkCommand(
                 linkRepository,
                 () -> "AAAAAAA",
-                () -> "12345678",
+                uniqueLinkCreator,
                 linkQuery,
-                linkHistoryCommand
+                linkHistoryCommand,
+                eventPublisher
         );
         CreateShortenLinkRequest request =
                 new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl.getValue(), EXAMPLE_TODAY_EXPIRED.expireDate);
@@ -108,9 +112,11 @@ class LinkCommandTest extends ServiceTest {
 
     @DisplayName("단축 Path로 Link를 찾은 후 LinkHistory를 생성하고, 해당 Link를 반환한다.")
     @Test
-    void accessLinkSuccess() {
+    void accessLinkSuccess() throws InterruptedException {
         Link link = linkRepository.save(EXAMPLE_TODAY_EXPIRED.toLink());
         Link accessLink = linkCommand.accessLink(EXAMPLE_TODAY_EXPIRED.shortenPath);
+
+        Thread.sleep(1000);
 
         LinkHistory createdLinkHistory = linkHistoryRepository.findAll().get(0);
         assertThat(link.getId()).isEqualTo(accessLink.getId());

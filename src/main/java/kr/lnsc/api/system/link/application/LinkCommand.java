@@ -8,8 +8,10 @@ import kr.lnsc.api.system.link.exception.InvalidExpireKeyException;
 import kr.lnsc.api.system.link.presentation.request.CreateShortenLinkRequest;
 import kr.lnsc.api.system.link.presentation.request.ExpireShortenLinkRequest;
 import kr.lnsc.api.system.linkhistory.application.LinkHistoryCommand;
+import kr.lnsc.api.system.linkhistory.domain.event.AppendLinkHistoryEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +25,8 @@ public class LinkCommand {
 
     private final LinkQuery linkQuery;
     private final LinkHistoryCommand linkHistoryCommand;
+
+    private final ApplicationEventPublisher eventPublisher;
 
     public Link createLink(CreateShortenLinkRequest request) {
         String shortenPath = uniqueLinkCreator.create();
@@ -50,7 +54,7 @@ public class LinkCommand {
 
     public Link accessLink(String shortenPath) {
         Link findLink = linkQuery.getLink(shortenPath);
-        linkHistoryCommand.createHistoryAsync(findLink);
+        eventPublisher.publishEvent(AppendLinkHistoryEvent.from(findLink.getId()));
         return findLink;
     }
 }
