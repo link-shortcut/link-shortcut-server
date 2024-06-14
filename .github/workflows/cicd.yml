@@ -1,7 +1,7 @@
 name: Link Shortcut CI/CD
 
 on:
-  pull_request:
+  push:
     branches: [ "master" ]
 
 permissions:
