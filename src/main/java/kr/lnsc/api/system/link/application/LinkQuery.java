@@ -14,7 +14,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class LinkQuery {
     private final LinkRepository linkRepository;
 
-    @Cacheable(value = "link", key = "#shortenPath")
+    @Cacheable(value = "link",
+            key = "#shortenPath",
+            unless = "#result.expiredAt.isBefore(T(java.time.LocalDateTime).now().plusSeconds(1800))")
     public Link getLink(String shortenPath) {
         return linkRepository.findLink(shortenPath)
                 .orElseThrow(LinkNotFoundException::new);
