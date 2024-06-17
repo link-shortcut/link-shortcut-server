@@ -7,12 +7,13 @@ import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 @EntityListeners(AuditingEntityListener.class)
 @MappedSuperclass
 @Getter
-public class TimeBaseEntity {
+public class TimeBaseEntity implements Serializable {
 
     @CreatedDate
     @Column(name = "created_at", updatable = false, columnDefinition = "datetime(6)")
