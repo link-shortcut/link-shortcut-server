@@ -10,7 +10,11 @@
 - Swagger
 - Memcached
 - Docker
+<br />
 
+## API 명세
+
+- 프로젝트 실행 후 http://localhost:8080/swagger-ui/index.html 에서 확인 가능
 <br />
 
 ## 프로젝트 실행
@@ -27,6 +31,7 @@ DEV_DB_URL: DB URL
 DEV_DB_USER: DB USER
 DEV_DB_PW: DB PASSWORD 
 ```
+<br />
 
 #### 1-1-2. IntelliJ IDEA 실행 환경 변수 설정
 
@@ -35,6 +40,7 @@ DEV_DB_PW: DB PASSWORD
 ```text
 BASE_URL=서비스 URL;DEV_DB_URL=DB URL;DEV_DB_USER=DB USER;DEV_DB_PW=DB PASSWORD
 ```
+<br />
 
 #### 1-2. DB 테이블 생성
 
@@ -48,11 +54,13 @@ spring:
 
 ...
 ```
+<br />
 
 #### 1-3. 서버 실행
 
 - ApiApplication.java 실행
 
+<br /><br />
 ### 2. Docker 빌드 후 실행 (운영 환경)
 
 #### 2-1. gradlew로 빌드 (docker 프로세스가 실행되어 있어야 함)
@@ -63,12 +71,14 @@ spring:
 # 테스트 제외, docker 프로세스 실행할 수 없을시
 ./gradlew -Pprofile=prod -x test clean build 
 ```
+<br />
 
 #### 2-2. Docker 빌드
 
 ```shell
 docker build -t link-shortcut-server .
 ```
+<br />
 
 #### 2-3. 환경 변수 설정
 
@@ -80,17 +90,18 @@ PROD_DB_URL=DB URL
 PROD_DB_USER=DB USER
 PROD_DB_PW=DB PASSWORD
 ```
+<br />
 
 #### 2-4. Docker 실행
 
 ```shell
 docker run --env-file=.env -d -p 8080:8080 link-shortcut-server
 ```
+<br />
 
 ## CI/CD 환경 구축
 
 <img src="./docs/architecture.png" width="840" height="600">
-<br />
 
 - main branch에 push될 경우 Github Actions가 작동하여 CI/CD 작동
     1. Gradle 빌드 & 테스트 수행
@@ -100,7 +111,4 @@ docker run --env-file=.env -d -p 8080:8080 link-shortcut-server
     5. 환경 변수 설정 후 Docker 컨테이너 실행
 
 - API & 단축 URL 접속 요청시 NGINX를 통하여 서버로 라우팅
-
-## API 명세
-
-- 프로젝트 실행 후 http://localhost:8080/swagger-ui/index.html 에서 확인 가능
+- NGINX에서 IP 기준으로 1초에 10개 요청만 허용하도록 Rate Limit 설정 적용
