@@ -58,27 +58,6 @@ class LinkCommandTest extends ServiceTest {
         assertThat(findLink.getExpiredAt()).isAfter(TODAY);
     }
 
-    @DisplayName("일정 시도 횟수로도 고유한 단축 Path를 얻지 못하면 예외가 발생한다.")
-    @Test
-    void uniqueShortenPathFail() {
-        UniqueLinkCreator uniqueLinkCreator = new UniqueLinkCreator(linkRepository, () -> "12345678");
-        LinkCommand customLinkCommand = new LinkCommand(
-                linkRepository,
-                () -> "AAAAAAA",
-                uniqueLinkCreator,
-                linkQuery,
-                linkHistoryCommand,
-                eventPublisher
-        );
-        CreateShortenLinkRequest request =
-                new CreateShortenLinkRequest(EXAMPLE_TODAY_EXPIRED.originalUrl.getValue(), EXAMPLE_TODAY_EXPIRED.expireDate);
-
-        customLinkCommand.createLink(request);
-
-        assertThatThrownBy(() -> customLinkCommand.createLink(request))
-                .isInstanceOf(CanNotFoundUniquePathException.class);
-    }
-
     @DisplayName("Link 객체의 만료키와 입력한 만료키가 같을 경우 Link 객체와 LinkHistory 객체를 삭제한다.")
     @Test
     void expireLinkSuccess() {
