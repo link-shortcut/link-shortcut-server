@@ -1,4 +1,4 @@
-package kr.lnsc.api.system.link.validator;
+package kr.lnsc.api.system.link.presentation;
 
 import jakarta.validation.ConstraintValidatorContext;
 import kr.lnsc.api.system.link.presentation.ExpireTimeValidator;
