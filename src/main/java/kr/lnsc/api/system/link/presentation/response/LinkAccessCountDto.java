@@ -21,8 +21,7 @@ public class LinkAccessCountDto {
     }
 
     public LinkAccessCountDto(Date date, long count) {
-        this.date = date.toLocalDate();
-        this.count = count;
+        this(date.toLocalDate(), count);
     }
 
     public boolean isEqualDate(LocalDate date) {
