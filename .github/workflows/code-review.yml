@@ -163,7 +163,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = ${{ steps.pr-info.outputs.pr_number }};
-            const summary = `${{ steps.gemini-review.outputs.summary }}`;
+            const summary = ${{ toJSON(steps.gemini-review.outputs.summary) }};
             const updatedAt = '${{ github.event.pull_request.updated_at }}';
             const workflowUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
           
