@@ -63,13 +63,13 @@ jobs:
           else
             PR_NUMBER="${{ github.event.pull_request.number }}"
           fi
-  
+          
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
-  
+          
           # 변경된 파일 목록
           echo "Changed files:"
           git diff --name-only origin/${{ github.event.pull_request.base.ref || github.base_ref }}...HEAD
-  
+          
           # 변경 통계
           echo "Change statistics:"
           git diff --stat origin/${{ github.event.pull_request.base.ref || github.base_ref }}...HEAD
@@ -163,39 +163,43 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
             const prNumber = ${{ steps.pr-info.outputs.pr_number }};
+            const summary = `${{ steps.gemini-review.outputs.summary }}`;
+            const updatedAt = '${{ github.event.pull_request.updated_at }}';
+            const workflowUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
+          
             const reviewContent = `## 🤖 Gemini AI Code Review
-            
-            ${{ steps.gemini-review.outputs.summary }}
-            
+          
+            ${summary}
+          
             ---
-            
+          
             <details>
             <summary>📊 리뷰 통계</summary>
-            
+          
             - **PR 번호**: #${prNumber}
-            - **리뷰 시각**: ${{ github.event.pull_request.updated_at }}
+            - **리뷰 시각**: ${updatedAt}
             - **모델**: Gemini 2.5 Pro
-            - **실행 워크플로우**: [링크](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-            
+            - **실행 워크플로우**: [링크](${workflowUrl})
+          
             </details>
-            
+          
             ---
-            
+          
             *💡 **Tip**: 추가 리뷰가 필요하면 코멘트에 \`@gemini-cli /review [특정 관점]\`를 입력하세요.*
             `;
-            
+          
             // 기존 Gemini 봇 코멘트 찾기
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
             });
-            
-            const botComment = comments.find(comment => 
-              comment.user.type === 'Bot' && 
+          
+            const botComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
               comment.body.includes('🤖 Gemini AI Code Review')
             );
-            
+          
             // 기존 코멘트 업데이트 또는 새로 생성
             if (botComment) {
               await github.rest.issues.updateComment({
