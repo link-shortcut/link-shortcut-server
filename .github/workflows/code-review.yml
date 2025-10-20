@@ -43,203 +43,203 @@ jobs:
       contents: read
       pull-requests: write
 
-  steps:
-    # 1. 해당 브랜치로 체크아웃
-    - name: Checkout Repository
-      uses: actions/checkout@v5
-      with:
-        fetch-depth: 0  # 전체 히스토리를 가져와서 diff 비교 가능
-        ref: ${{ github.event.pull_request.head.sha }}
+    steps:
+      # 1. 해당 브랜치로 체크아웃
+      - name: Checkout Repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0  # 전체 히스토리를 가져와서 diff 비교 가능
+          ref: ${{ github.event.pull_request.head.sha }}
 
-    # 2. 변경된 파일과 diff 정보 수집
-    - name: Get PR details and changes
-      id: pr-info
-      run: |
-        # PR 번호 확인
-        if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
-          PR_NUMBER="${{ inputs.pr_number }}"
-        elif [ "${{ github.event_name }}" == "issue_comment" ]; then
-          PR_NUMBER="${{ github.event.issue.number }}"
-        else
-          PR_NUMBER="${{ github.event.pull_request.number }}"
-        fi
+      # 2. 변경된 파일과 diff 정보 수집
+      - name: Get PR details and changes
+        id: pr-info
+        run: |
+          # PR 번호 확인
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            PR_NUMBER="${{ inputs.pr_number }}"
+          elif [ "${{ github.event_name }}" == "issue_comment" ]; then
+            PR_NUMBER="${{ github.event.issue.number }}"
+          else
+            PR_NUMBER="${{ github.event.pull_request.number }}"
+          fi
+  
+          echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+  
+          # 변경된 파일 목록
+          echo "Changed files:"
+          git diff --name-only origin/${{ github.event.pull_request.base.ref || github.base_ref }}...HEAD
+  
+          # 변경 통계
+          echo "Change statistics:"
+          git diff --stat origin/${{ github.event.pull_request.base.ref || github.base_ref }}...HEAD
 
-        echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
+      # 3. Gemini CLI를 사용한 코드 리뷰
+      - name: Run Gemini Code Review
+        id: gemini-review
+        uses: google-github-actions/run-gemini-cli@v0
+        with:
+          # Gemini API Key (Google AI Studio에서 발급)
+          gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
 
-        # 변경된 파일 목록
-        echo "Changed files:"
-        git diff --name-only origin/${{ github.event.pull_request.base.ref || github.base_ref }}...HEAD
+          # 리뷰 프롬프트
+          prompt: |
+            당신은 전문 코드 리뷰어입니다. 이 PR을 다음 5가지 핵심 관점에서 종합적으로 리뷰해주세요:
+            
+            ## 리뷰 기준
+            1. **기능/로직**: 요구사항을 충족하며, 예외 처리가 적절한가?
+            2. **가독성**: 이름은 명확하고, 코딩 스타일은 일관적인가?
+            3. **유지보수**: 중복이 없고, 향후 변경 및 확장이 용이한가?
+            4. **성능**: 비효율적인 로직이나 불필요한 자원 낭비는 없는가?
+            5. **보안**: 입력값 검증 등 잠재적 보안 취약점은 없는가?
+            
+            ## 중요 지침
+            - 주변 코드 컨텍스트를 충분히 참고하여 정확한 리뷰를 제공하세요
+            - 피드백은 비난이 아닌 건설적 제안의 형태로 작성하세요
+            - 긍정적이고 도움이 되는 톤을 유지하세요
+            - 구체적인 개선 방법과 예시 코드를 함께 제공하세요
+            
+            ## 리뷰 형식
+            다음 형식으로 작성해주세요:
+            
+            ### 📋 전체 요약
+            [2-3문장으로 PR의 전반적인 평가]
+            
+            ### ✅ 잘된 점
+            - [긍정적인 측면들을 구체적으로 나열]
+            
+            ### 💡 개선 제안
+            
+            #### 1. 기능/로직
+            [구체적인 제안과 코드 예시]
+            
+            #### 2. 가독성
+            [구체적인 제안과 코드 예시]
+            
+            #### 3. 유지보수
+            [구체적인 제안과 코드 예시]
+            
+            #### 4. 성능
+            [구체적인 제안과 코드 예시]
+            
+            #### 5. 보안
+            [구체적인 제안과 코드 예시]
+            
+            ### 🎯 우선순위 액션 아이템
+            1. [즉시 처리 필요]
+            2. [권장 개선사항]
+            3. [향후 고려사항]
+            
+            ---
+            **참고**: 특별한 이슈가 없는 카테고리는 "이슈 없음" 또는 생략 가능합니다.
+            
+            이제 PR #${{ steps.pr-info.outputs.pr_number }}을 리뷰해주세요.
 
-        # 변경 통계
-        echo "Change statistics:"
-        git diff --stat origin/${{ github.event.pull_request.base.ref || github.base_ref }}...HEAD
+          # GitHub Token (자동 제공 또는 GitHub App 토큰 사용)
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          # github_token: ${{ steps.generate-token.outputs.token }}
 
-    # 3. Gemini CLI를 사용한 코드 리뷰
-    - name: Run Gemini Code Review
-      id: gemini-review
-      uses: google-github-actions/run-gemini-cli@v0
-      with:
-        # Gemini API Key (Google AI Studio에서 발급)
-        gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
+          # PR 번호
+          pr_number: ${{ steps.pr-info.outputs.pr_number }}
 
-        # 리뷰 프롬프트
-        prompt: |
-          당신은 전문 코드 리뷰어입니다. 이 PR을 다음 5가지 핵심 관점에서 종합적으로 리뷰해주세요:
-          
-          ## 리뷰 기준
-          1. **기능/로직**: 요구사항을 충족하며, 예외 처리가 적절한가?
-          2. **가독성**: 이름은 명확하고, 코딩 스타일은 일관적인가?
-          3. **유지보수**: 중복이 없고, 향후 변경 및 확장이 용이한가?
-          4. **성능**: 비효율적인 로직이나 불필요한 자원 낭비는 없는가?
-          5. **보안**: 입력값 검증 등 잠재적 보안 취약점은 없는가?
-          
-          ## 중요 지침
-          - 주변 코드 컨텍스트를 충분히 참고하여 정확한 리뷰를 제공하세요
-          - 피드백은 비난이 아닌 건설적 제안의 형태로 작성하세요
-          - 긍정적이고 도움이 되는 톤을 유지하세요
-          - 구체적인 개선 방법과 예시 코드를 함께 제공하세요
-          
-          ## 리뷰 형식
-          다음 형식으로 작성해주세요:
-          
-          ### 📋 전체 요약
-          [2-3문장으로 PR의 전반적인 평가]
-          
-          ### ✅ 잘된 점
-          - [긍정적인 측면들을 구체적으로 나열]
-          
-          ### 💡 개선 제안
-          
-          #### 1. 기능/로직
-          [구체적인 제안과 코드 예시]
-          
-          #### 2. 가독성
-          [구체적인 제안과 코드 예시]
-          
-          #### 3. 유지보수
-          [구체적인 제안과 코드 예시]
-          
-          #### 4. 성능
-          [구체적인 제안과 코드 예시]
-          
-          #### 5. 보안
-          [구체적인 제안과 코드 예시]
-          
-          ### 🎯 우선순위 액션 아이템
-          1. [즉시 처리 필요]
-          2. [권장 개선사항]
-          3. [향후 고려사항]
-          
-          ---
-          **참고**: 특별한 이슈가 없는 카테고리는 "이슈 없음" 또는 생략 가능합니다.
-          
-          이제 PR #${{ steps.pr-info.outputs.pr_number }}을 리뷰해주세요.
+          # 모델 설정 (선택사항)
+          # model: 'gemini-2.5-pro-exp-0123'  # 최신 모델
 
-        # GitHub Token (자동 제공 또는 GitHub App 토큰 사용)
-        github_token: ${{ secrets.GITHUB_TOKEN }}
-        # github_token: ${{ steps.generate-token.outputs.token }}
+          # 출력 형식
+          output_format: markdown
 
-        # PR 번호
-        pr_number: ${{ steps.pr-info.outputs.pr_number }}
+          # 설정 파일 사용 (선택사항)
+          # settings: |
+          #   {
+          #     "model": "gemini-2.5-pro-exp-0123",
+          #     "temperature": 0.7
+          #   }
 
-        # 모델 설정 (선택사항)
-        # model: 'gemini-2.5-pro-exp-0123'  # 최신 모델
-
-        # 출력 형식
-        output_format: markdown
-
-        # 설정 파일 사용 (선택사항)
-        # settings: |
-        #   {
-        #     "model": "gemini-2.5-pro-exp-0123",
-        #     "temperature": 0.7
-        #   }
-
-    # 4. 리뷰 결과를 PR에 코멘트로 게시
-    - name: Post review to PR
-      if: success()
-      uses: actions/github-script@v7
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const prNumber = ${{ steps.pr-info.outputs.pr_number }};
-          const reviewContent = `## 🤖 Gemini AI Code Review
-          
-          ${{ steps.gemini-review.outputs.summary }}
-          
-          ---
-          
-          <details>
-          <summary>📊 리뷰 통계</summary>
-          
-          - **PR 번호**: #${prNumber}
-          - **리뷰 시각**: ${{ github.event.pull_request.updated_at }}
-          - **모델**: Gemini 2.5 Pro
-          - **실행 워크플로우**: [링크](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          
-          </details>
-          
-          ---
-          
-          *💡 **Tip**: 추가 리뷰가 필요하면 코멘트에 \`@gemini-cli /review [특정 관점]\`를 입력하세요.*
-          `;
-          
-          // 기존 Gemini 봇 코멘트 찾기
-          const { data: comments } = await github.rest.issues.listComments({
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            issue_number: prNumber,
-          });
-          
-          const botComment = comments.find(comment => 
-            comment.user.type === 'Bot' && 
-            comment.body.includes('🤖 Gemini AI Code Review')
-          );
-          
-          // 기존 코멘트 업데이트 또는 새로 생성
-          if (botComment) {
-            await github.rest.issues.updateComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: botComment.id,
-              body: reviewContent
-            });
-            console.log('✅ 기존 리뷰 코멘트를 업데이트했습니다.');
-          } else {
-            await github.rest.issues.createComment({
+      # 4. 리뷰 결과를 PR에 코멘트로 게시
+      - name: Post review to PR
+        if: success()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = ${{ steps.pr-info.outputs.pr_number }};
+            const reviewContent = `## 🤖 Gemini AI Code Review
+            
+            ${{ steps.gemini-review.outputs.summary }}
+            
+            ---
+            
+            <details>
+            <summary>📊 리뷰 통계</summary>
+            
+            - **PR 번호**: #${prNumber}
+            - **리뷰 시각**: ${{ github.event.pull_request.updated_at }}
+            - **모델**: Gemini 2.5 Pro
+            - **실행 워크플로우**: [링크](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+            </details>
+            
+            ---
+            
+            *💡 **Tip**: 추가 리뷰가 필요하면 코멘트에 \`@gemini-cli /review [특정 관점]\`를 입력하세요.*
+            `;
+            
+            // 기존 Gemini 봇 코멘트 찾기
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
-              body: reviewContent
             });
-            console.log('✅ 새 리뷰 코멘트를 생성했습니다.');
-          }
+            
+            const botComment = comments.find(comment => 
+              comment.user.type === 'Bot' && 
+              comment.body.includes('🤖 Gemini AI Code Review')
+            );
+            
+            // 기존 코멘트 업데이트 또는 새로 생성
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: reviewContent
+              });
+              console.log('✅ 기존 리뷰 코멘트를 업데이트했습니다.');
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: reviewContent
+              });
+              console.log('✅ 새 리뷰 코멘트를 생성했습니다.');
+            }
 
-    # 실패 시 알림
-    - name: Notify on failure
-      if: failure()
-      uses: actions/github-script@v7
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-        script: |
-          const prNumber = ${{ steps.pr-info.outputs.pr_number || github.event.pull_request.number }};
-          
-          if (prNumber) {
-            await github.rest.issues.createComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: prNumber,
-              body: `❌ **코드 리뷰 생성 실패**
-          
-              죄송합니다. 코드 리뷰 생성 중 오류가 발생했습니다.
-          
-              **실행 로그**: [확인하기](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
-          
-              일반적인 원인:
-              - API 키 설정 오류
-              - Rate limit 초과
-              - 네트워크 문제
-          
-              다시 시도하려면 코멘트에 \`@gemini-cli /review\`를 입력하세요.`
-            });
-          }
+      # 실패 시 알림
+      - name: Notify on failure
+        if: failure()
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const prNumber = ${{ steps.pr-info.outputs.pr_number || github.event.pull_request.number }};
+            
+            if (prNumber) {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: prNumber,
+                body: `❌ **코드 리뷰 생성 실패**
+            
+                죄송합니다. 코드 리뷰 생성 중 오류가 발생했습니다.
+            
+                **실행 로그**: [확인하기](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }})
+            
+                일반적인 원인:
+                - API 키 설정 오류
+                - Rate limit 초과
+                - 네트워크 문제
+            
+                다시 시도하려면 코멘트에 \`@gemini-cli /review\`를 입력하세요.`
+              });
+            }
