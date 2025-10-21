@@ -9,14 +9,6 @@ on:
     types:
       - created
 
-  pull_request_review_comment:
-    types:
-      - created
-
-  pull_request_review:
-    types:
-      - submitted
-
   # Actions UI에서 수동 실행
   workflow_dispatch:
     inputs:
@@ -39,6 +31,14 @@ permissions:
 jobs:
   review:
     runs-on: ubuntu-latest
+
+    if: |
+      github.event_name == 'pull_request' || 
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'issue_comment' && 
+       github.event.issue.pull_request && 
+       contains(github.event.comment.body, '/review'))
+
     permissions:
       contents: read
       pull-requests: write
@@ -221,40 +221,40 @@ jobs:
             const summary = ${{ toJSON(steps.gemini-review.outputs.summary) }};
             const updatedAt = '${{ github.event.pull_request.updated_at }}';
             const workflowUrl = '${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}';
-          
+            
             const reviewContent = `## 🤖 Gemini AI Code Review
-          
+            
             ${summary}
-          
+            
             ---
-          
+            
             <details>
             <summary>📊 리뷰 통계</summary>
-          
+            
             - **PR 번호**: #${prNumber}
             - **리뷰 시각**: ${updatedAt}
             - **모델**: Gemini 2.5 Pro
             - **실행 워크플로우**: [링크](${workflowUrl})
-          
+            
             </details>
-          
+            
             ---
-          
+            
             *💡 **Tip**: 추가 리뷰가 필요하면 코멘트에 \`@gemini-cli /review [특정 관점]\`를 입력하세요.*
             `;
-          
+            
             // 기존 Gemini 봇 코멘트 찾기
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: prNumber,
             });
-          
+            
             const botComment = comments.find(comment =>
               comment.user.type === 'Bot' &&
               comment.body.includes('🤖 Gemini AI Code Review')
             );
-          
+            
             // 기존 코멘트 업데이트 또는 새로 생성
             if (botComment) {
               await github.rest.issues.updateComment({
