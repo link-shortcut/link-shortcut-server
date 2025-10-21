@@ -66,13 +66,51 @@ jobs:
           
           echo "pr_number=$PR_NUMBER" >> $GITHUB_OUTPUT
           
-          # 변경된 파일 목록
+          # Base 브랜치 결정
+          BASE_REF="${{ github.event.pull_request.base.ref || github.base_ref }}"
+          if [ -z "$BASE_REF" ]; then
+            BASE_REF="main"
+          fi
+          echo "base_ref=$BASE_REF" >> $GITHUB_OUTPUT
+          
+          # 변경된 파일 목록 저장
           echo "Changed files:"
-          git diff --name-only origin/${{ github.event.pull_request.base.ref || github.base_ref }}...HEAD
+          CHANGED_FILES=$(git diff --name-only origin/$BASE_REF...HEAD)
+          echo "$CHANGED_FILES"
+          echo "changed_files<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
           
           # 변경 통계
           echo "Change statistics:"
-          git diff --stat origin/${{ github.event.pull_request.base.ref || github.base_ref }}...HEAD
+          CHANGE_STATS=$(git diff --stat origin/$BASE_REF...HEAD)
+          echo "$CHANGE_STATS"
+          echo "change_stats<<EOF" >> $GITHUB_OUTPUT
+          echo "$CHANGE_STATS" >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+          
+          # 전체 diff 저장 (파일 크기 제한 고려)
+          echo "Full diff:"
+          FULL_DIFF=$(git diff origin/$BASE_REF...HEAD)
+          
+          # diff 크기 체크 (너무 크면 요약만)
+          DIFF_SIZE=${#FULL_DIFF}
+          if [ $DIFF_SIZE -gt 50000 ]; then
+            echo "⚠️  Diff is too large ($DIFF_SIZE chars), using summary only"
+            echo "full_diff<<EOF" >> $GITHUB_OUTPUT
+            echo "## ⚠️ Diff가 너무 큽니다 (${DIFF_SIZE} characters)" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            echo "### 변경된 파일 목록:" >> $GITHUB_OUTPUT
+            echo "$CHANGED_FILES" >> $GITHUB_OUTPUT
+            echo "" >> $GITHUB_OUTPUT
+            echo "### 변경 통계:" >> $GITHUB_OUTPUT
+            echo "$CHANGE_STATS" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "full_diff<<EOF" >> $GITHUB_OUTPUT
+            echo "$FULL_DIFF" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          fi
 
       # 3. Gemini CLI를 사용한 코드 리뷰
       - name: Run Gemini Code Review
@@ -85,6 +123,23 @@ jobs:
           # 리뷰 프롬프트
           prompt: |
             당신은 전문 코드 리뷰어입니다. 이 PR을 다음 5가지 핵심 관점에서 종합적으로 리뷰해주세요:
+            
+            ## PR 변경 사항
+            
+            ### 변경된 파일 목록:
+            ```
+            ${{ steps.pr-info.outputs.changed_files }}
+            ```
+            
+            ### 변경 통계:
+            ```
+            ${{ steps.pr-info.outputs.change_stats }}
+            ```
+            
+            ### 전체 Diff:
+            ```diff
+            ${{ steps.pr-info.outputs.full_diff }}
+            ```
             
             ## 리뷰 기준
             1. **기능/로직**: 요구사항을 충족하며, 예외 처리가 적절한가?
@@ -103,27 +158,27 @@ jobs:
             다음 형식으로 작성해주세요:
             
             ### 📋 전체 요약
-            [2-3문장으로 PR의 전반적인 평가]
+            [ 2-3문장으로 PR의 전반적인 평가 ]
             
             ### ✅ 잘된 점
-            - [긍정적인 측면들을 구체적으로 나열]
+            - [ 긍정적인 측면들을 구체적으로 나열 ]
             
             ### 💡 개선 제안
             
             #### 1. 기능/로직
-            [구체적인 제안과 코드 예시]
+            [ 구체적인 제안과 코드 예시 ]
             
             #### 2. 가독성
-            [구체적인 제안과 코드 예시]
+            [ 구체적인 제안과 코드 예시 ]
             
             #### 3. 유지보수
-            [구체적인 제안과 코드 예시]
+            [ 구체적인 제안과 코드 예시 ]
             
             #### 4. 성능
-            [구체적인 제안과 코드 예시]
+            [ 구체적인 제안과 코드 예시 ]
             
             #### 5. 보안
-            [구체적인 제안과 코드 예시]
+            [ 구체적인 제안과 코드 예시 ]
             
             ### 🎯 우선순위 액션 아이템
             1. [즉시 처리 필요]
@@ -134,26 +189,26 @@ jobs:
             **참고**: 특별한 이슈가 없는 카테고리는 "이슈 없음" 또는 생략 가능합니다.
             
             이제 PR #${{ steps.pr-info.outputs.pr_number }}을 리뷰해주세요.
-
-          # GitHub Token (자동 제공 또는 GitHub App 토큰 사용)
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          # github_token: ${{ steps.generate-token.outputs.token }}
-
-          # PR 번호
-          pr_number: ${{ steps.pr-info.outputs.pr_number }}
-
-          # 모델 설정 (선택사항)
-          # model: 'gemini-2.5-pro-exp-0123'  # 최신 모델
-
-          # 출력 형식
-          output_format: markdown
-
-          # 설정 파일 사용 (선택사항)
-          # settings: |
-          #   {
-          #     "model": "gemini-2.5-pro-exp-0123",
-          #     "temperature": 0.7
-          #   }
+            
+            # GitHub Token (자동 제공 또는 GitHub App 토큰 사용)
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            # github_token: ${{ steps.generate-token.outputs.token }}
+            
+            # PR 번호
+            pr_number: ${{ steps.pr-info.outputs.pr_number }}
+            
+            # 모델 설정 (선택사항)
+            # model: 'gemini-2.5-pro-exp-0123'  # 최신 모델
+            
+            # 출력 형식
+            output_format: markdown
+            
+            # 설정 파일 사용 (선택사항)
+            # settings: |
+            #   {
+            #     "model": "gemini-2.5-pro-exp-0123",
+            #     "temperature": 0.7
+            #   }
 
       # 4. 리뷰 결과를 PR에 코멘트로 게시
       - name: Post review to PR
